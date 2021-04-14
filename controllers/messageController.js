@@ -10,6 +10,19 @@ router.get("/sync", (req, res) => {
     }
   })
 })
+router.post('/new', (req, res) => {
+  const dbMessage = req.body
+  console.log(dbMessage)
+  Message.create(dbMessage, (err, data) => {
+    if(err){
+      console.log(err)
+      res.status(500).send(err)
+    }else{
+      res.status(200).send(data)
+    }
+  })
+})
+
 
 // router.post('/new', async (req, res) => {
 //   try{
@@ -26,16 +39,4 @@ router.get("/sync", (req, res) => {
 //     res.status(400).json({msg: 'unable to create message'})
 //   }
 // })
-router.post('/new', (req, res) => {
-  const dbMessage = req.body
-
-  Message.create(dbMessage, (err, data) => {
-    if(err){
-      res.status(500).send(err)
-    }else{
-      res.status(200).send(data)
-    }
-  })
-})
-
 module.exports = router

@@ -1,42 +1,47 @@
 const mongoose = require('mongoose')
-const Pusher = require('pusher')
+const Pusher = require("pusher");
+
 require('./dbMessages')
 
-const MONGO_URL = process.env.MONGO_URL || 'mongodb://localhost/whatsapp'
+const pusher = new Pusher({
+  appId: process.env.appId, 
+  key: process.env.key, 
+  secret: process.env.secret,
+  cluster: process.env.cluster,
+  useTLS: true
+});
 
-mongoose.connect(MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true,
-    useUnifiedTopology: false
-})
+const connection_url = process.env.ATLAS_URI
 
-const db = mongoose.connection
+mongoose.connect(connection_url, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useCreateIndex: true,
+  })
 
-db.once('open', () => {
-    console.log(`mongoDB connection @ ${db.host}:${db.port}`)
+  const db = mongoose.connection
 
+  db.once("open", () => {
+    console.log("DB connected")
 
-    const msgCollection = db.collection('messagecontents');
-    const changeStream = msgCollection.watch();
-    
-    changeStream.on('change', (change) => {
-      console.log("A CHANGE OCCURRED", change)
+    const msgCollection = db.collection("messagecontents")
+    const changeStream = msgCollection.watch()
+
+    changeStream.on("change", (change) => {
+      console.log("A CHANGE OCCURED ", change)
 
       if(change.operationType === 'insert'){
         const messageDetails = change.fullDocument
-        Pusher.trigger('messages', 'inserted', 
+        pusher.trigger('messages', 'inserted', 
         {
           name: messageDetails.name,
           message: messageDetails.message,
           timestamp: messageDetails.timestamp,
           received: messageDetails.received
         })
+      }else{
+        console.log('Error triggering pusher')
       }
-    });
-    
-})
 
-db.on('error', () => {
-    console.error(`someting has gone wrong with the DB \n ${err}`)
+  })
 })

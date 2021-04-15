@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const Pusher = require("pusher");
 
 require('./dbMessages')
+require('./dbRooms')
 
 const pusher = new Pusher({
   appId: process.env.appId, 
@@ -28,7 +29,6 @@ mongoose.connect(connection_url, {
     const changeStream = msgCollection.watch()
 
     changeStream.on("change", (change) => {
-      console.log("A CHANGE OCCURED ", change)
 
       if(change.operationType === 'insert'){
         const messageDetails = change.fullDocument
@@ -38,6 +38,22 @@ mongoose.connect(connection_url, {
           message: messageDetails.message,
           timestamp: messageDetails.timestamp,
           received: messageDetails.received
+        })
+      }else{
+        console.log('Error triggering pusher')
+      }
+
+  })
+    const roomCollection = db.collection("roomcontents")
+    const roomchangeStream = roomCollection.watch()
+
+    roomchangeStream.on("change", (change) => {
+
+      if(change.operationType === 'insert'){
+        const roomDetails = change.fullDocument
+        pusher.trigger('rooms', 'inserted', 
+        {
+          name: roomDetails.name,
         })
       }else{
         console.log('Error triggering pusher')

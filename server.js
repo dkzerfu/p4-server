@@ -27,6 +27,8 @@ app.get("/", (req, res) => {
 })
 
 app.use('/api/messages', require('./controllers/messageController'))
+app.use('/api/rooms', require('./controllers/roomController'))
+app.use('/auth', require('./controllers/authController'))
 
 // listen
 app.listen(PORT, () => {

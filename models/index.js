@@ -26,12 +26,13 @@ mongoose.connect(connection_url, {
   db.once("open", () => {
     console.log("DB connected")
 
-  //   const msgCollection = db.collection("messagecontents")
+  //   const msgCollection = db.collection("roomcontents")
   //   const changeStream = msgCollection.watch()
 
   //   changeStream.on("change", (change) => {
 
   //     if(change.operationType === 'insert'){
+  //       console.log(change)
   //       const messageDetails = change.fullDocument
   //       pusher.trigger('messages', 'inserted', 
   //       {
@@ -45,26 +46,26 @@ mongoose.connect(connection_url, {
   //     }
 
   // })
-    const msgCollection = db.collection("roomcontents")
-    const changeStream = msgCollection.watch()
+  // //   const msgCollection = db.collection("roomcontents")
+  //   const changeStream = msgCollection.watch()
 
-    changeStream.on("change", (change) => {
+  //   changeStream.on("change", (change) => {
 
-      if(change.operationType === 'insert'){
-        const messageDetails = change.fullDocument.messages
-        console.log(`####################${messageDetails}  "##################################"`)
-        pusher.trigger('messages', 'inserted', 
-        {
-          name: messageDetails.name,
-          message: messageDetails.message,
-          timestamp: messageDetails.timestamp,
-          received: messageDetails.received
-        })
-      }else{
-        console.log('Error triggering pusher')
-      }
+  //     if(change.operationType === 'insert'){
+  //       const messageDetails = change.fullDocument.messages
+  //       console.log(`####################${messageDetails}  "##################################"`)
+  //       pusher.trigger('messages', 'inserted', 
+  //       {
+  //         name: messageDetails.name,
+  //         message: messageDetails.message,
+  //         timestamp: messageDetails.timestamp,
+  //         received: messageDetails.received
+  //       })
+  //     }else{
+  //       console.log('Error triggering pusher')
+  //     }
 
-  })
+  // })
 
 
     const roomCollection = db.collection("roomcontents")
@@ -82,6 +83,18 @@ mongoose.connect(connection_url, {
           
         })
 
+      }else if(change.operationType === 'update'){
+        console.log(change)
+        const roomDetails = change.updateDescription.updatedFields
+        console.log(roomDetails)
+        
+        pusher.trigger('messages', 'inserted', 
+        {
+          
+          messages: roomDetails.messages
+          
+        })
+        console.log("updating.....")
       }else{
         console.log('Error triggering pusher')
       }

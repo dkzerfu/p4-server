@@ -38,8 +38,8 @@ router.get("/sync", (req, res) => {
 router.post('/new', async (req, res) => {
   const dbMessage = req.body
   const room = dbMessage.id  
-  console.log(room)
-  console.log(dbMessage)
+  console.log("this is the room", room)
+  console.log("this is the messages",dbMessage)
   const filter = {id: room}
   const update = {messages: {
     message: dbMessage.message,

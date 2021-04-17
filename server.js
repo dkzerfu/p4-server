@@ -2,8 +2,7 @@
 const express = require('express')
 const rowdy = require('rowdy-logger')
 const cors = require('cors')
-const Messages = require('./models/dbMessages')
-const Pusher = require("pusher");
+const passport = require('passport')
 require('dotenv').config()
 require('./models')
 
@@ -17,7 +16,7 @@ const rowdyResults = rowdy.begin(app)
 app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
-
+app.use(passport.initialize())
 
 // API
 

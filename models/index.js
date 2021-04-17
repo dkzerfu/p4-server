@@ -86,7 +86,6 @@ mongoose.connect(connection_url, {
       }else if(change.operationType === 'update'){
         console.log(change)
         const roomDetails = change.updateDescription.updatedFields
-        console.log(roomDetails)
         
         pusher.trigger('messages', 'inserted', 
         {

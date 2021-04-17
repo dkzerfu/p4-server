@@ -28,7 +28,6 @@
     "passport": "^0.4.1",
     "passport-google-oauth20": "^2.0.0",
     "pusher": "^5.0.0",
-    "rowdy-logger": "^1.0.2",
-    "socket.io": "^4.0.1"
+    "rowdy-logger": "^1.0.2"
   }
 }

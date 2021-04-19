@@ -10,39 +10,39 @@ const User = require('../models/User')
 // with a user object, which will be set at `req.user` in route handlers after
 // authentication.
 passport.use(new Strategy({
-    clientID: process.env['GOOGLE_CLIENT_ID'],
-    clientSecret: process.env['GOOGLE_CLIENT_SECRET'],
-    callbackURL: `/auth/google/callback`
+  clientID: process.env['GOOGLE_CLIENT_ID'],
+  clientSecret: process.env['GOOGLE_CLIENT_SECRET'],
+  callbackURL: `/auth/google/callback`
 },
-    async function (accessToken, refreshToken, profile, cb) {
-        // profile is the Google User object we get from Google
-        const user = await User.findOne({
-            provider: profile.provider,
-            provider_id: profile.id
-        })
-        // console.log('The user from our database', user)
+  async function (accessToken, refreshToken, profile, cb) {
+    // profile is the Google User object we get from Google
+    const user = await User.findOne({
+      provider: profile.provider,
+      provider_id: profile.id
+    })
+    // console.log('The user from our database', user)
 
-        if(!user) {
-            const newUser = await User.create({
-                provider: profile.provider,
-                provider_id: profile.id,
-                displayName: profile.displayName,
-                name: {
-                    familyName: profile.name.familyName,
-                    givenName: profile.name.givenName,
-                    middleName: profile.name.middleName
-                },
-                photos: profile.photos
-            })
-            // console.log('New user saved in database', newUser)
+    if (!user) {
+      const newUser = await User.create({
+        provider: profile.provider,
+        provider_id: profile.id,
+        displayName: profile.displayName,
+        name: {
+          familyName: profile.name.familyName,
+          givenName: profile.name.givenName,
+          middleName: profile.name.middleName
+        },
+        photos: profile.photos
+      })
+      // console.log('New user saved in database', newUser)
 
-            // We just created a user, return that user
-            return cb(null, newUser)
-        } else {
-            // The user is already in the db
-            return cb(null, user);
-        }
+      // We just created a user, return that user
+      return cb(null, newUser)
+    } else {
+      // The user is already in the db
+      return cb(null, user);
     }
+  }
 ));
 
 module.exports = passport

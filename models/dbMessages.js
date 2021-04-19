@@ -1,18 +1,18 @@
-const mongoose = require ('mongoose')
+const mongoose = require('mongoose')
 
 const messagesSchema = mongoose.Schema({
   message: {
-    type:String
+    type: String
   },
   name: {
-    type:String
+    type: String
   },
   timestamp: {
-    type:String
+    type: String
   },
   received: {
-    type:Boolean
-  } 
+    type: Boolean
+  }
 })
 
 const Message = mongoose.model('messagecontents', messagesSchema)

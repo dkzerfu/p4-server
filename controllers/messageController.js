@@ -4,57 +4,34 @@ const Room = require('../models/dbRooms')
 
 router.get("/sync", (req, res) => {
   Message.find((err, data) => {
-    if(err){
+    if (err) {
       res.status(500).send(err)
-    }else {
+    } else {
       res.status(200).send(data)
     }
   })
 })
-// router.post('/new', (req, res) => {
-//   const dbMessage = req.body
-//   const room = dbMessage.id  
-//   console.log(room)
-//   console.log(dbMessage)
-//   // Message.create(dbMessage, (err, data) => {
-//     Room.findByIdAndUpdate(room, {
-//       $addToSet: {messages: {
-//         message: dbMessage.message,
-//         name: dbMessage.name,
-//         timestamp: dbMessage.timestamp,
-//         received: dbMessage.received
-//       }}
-//     })
-//     if(err){
-//       console.log(err)
-//       res.status(500).send(err)
-//     }else{
-//       res.status(200).send(data)
-//     }
-//   })
-// })
-
 
 router.post('/new', async (req, res) => {
   const dbMessage = req.body
-  const room = dbMessage.id  
-  console.log("this is the room", room)
-  console.log("this is the messages",dbMessage)
-  const filter = {id: room}
-  const update = {messages: {
-    message: dbMessage.message,
-    name: dbMessage.name,
-    timestamp: dbMessage.timestamp,
-    received: dbMessage.received
-  }}
-  try{
-    const newMessage = await Room.findByIdAndUpdate(room, { 
+  const room = dbMessage.id
+  const filter = { id: room }
+  const update = {
+    messages: {
+      message: dbMessage.message,
+      name: dbMessage.name,
+      timestamp: dbMessage.timestamp,
+      received: dbMessage.received
+    }
+  }
+  try {
+    const newMessage = await Room.findByIdAndUpdate(room, {
       $addToSet: update,
-    }, { new: true})
+    }, { new: true })
     res.json(newMessage)
-  }catch(err){
+  } catch (err) {
     console.log(err)
-    res.status(400).json({msg: 'unable to create message'})
+    res.status(400).json({ msg: 'unable to create message' })
   }
 })
 module.exports = router

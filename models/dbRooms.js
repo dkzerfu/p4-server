@@ -1,24 +1,24 @@
-const mongoose = require ('mongoose')
+const mongoose = require('mongoose')
 
 const messagesSchema = mongoose.Schema({
   message: {
-    type:String
+    type: String
   },
   name: {
-    type:String
+    type: String
   },
   timestamp: {
-    type:String
+    type: String
   },
   received: {
-    type:Boolean
-  } 
+    type: Boolean
+  }
 })
 
 const roomsSchema = mongoose.Schema({
-  
+
   name: {
-    type:String
+    type: String
   },
   messages: [messagesSchema]
 })

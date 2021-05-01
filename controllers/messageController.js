@@ -15,7 +15,6 @@ router.get("/sync", (req, res) => {
 router.post('/new', async (req, res) => {
   const dbMessage = req.body
   const room = dbMessage.id
-  const filter = { id: room }
   const update = {
     messages: {
       message: dbMessage.message,
